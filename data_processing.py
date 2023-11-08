@@ -133,6 +133,36 @@ print()
 print("The average number of passes")
 print(f"Forwards : {avg_forward}")
 print(f"Midfielder : {avg_midfielder}")
+print()
+
+my_table3 = my_DB.search('titanic')
+my_table3_first = my_table3.filter(lambda x: int(x['class']) == 1)
+my_table3_third = my_table3.filter(lambda x: int(x['class']) == 3)
+avg_first = my_table3_first.aggregate(lambda x: sum(x)/len(x), 'fare')
+avg_third = my_table3_third.aggregate(lambda x: sum(x)/len(x), 'fare')
+
+print("The average fare paid by passengers")
+print(f"First class: {avg_first}")
+print(f"Third class: {avg_third}")
+print()
+
+my_table3_male = my_table3.filter(lambda x: x['gender'] == "M")
+my_table3_male_s = my_table3_male.filter(lambda x: x['survived'] == "yes")
+my_table3_female = my_table3.filter(lambda x: x['gender'] == "F")
+my_table3_female_s = my_table3_female.filter(lambda x: x['survived'] == "yes")
+
+count_M = my_table3_male.aggregate(lambda x: len(x), 'fare')
+survived_M = my_table3_male_s.aggregate(lambda x: len(x), 'fare')
+count_F = my_table3_female.aggregate(lambda x: len(x), 'fare')
+survived_F = my_table3_female_s.aggregate(lambda x: len(x), 'fare')
+
+rate_M = survived_M/count_M
+rate_F = survived_F/count_F
+
+print("The survival rate")
+print(f'Of male {rate_M}')
+print(f'Of female {rate_F}')
+
 
 # print("Test filter: only filtering out cities in Italy")
 # my_table1_filtered = my_table1.filter(lambda x: x['country'] == 'Italy')
