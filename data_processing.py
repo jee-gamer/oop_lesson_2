@@ -151,7 +151,7 @@ my_table3_male_s = my_table3_male.filter(lambda x: x['survived'] == "yes")
 my_table3_female = my_table3.filter(lambda x: x['gender'] == "F")
 my_table3_female_s = my_table3_female.filter(lambda x: x['survived'] == "yes")
 
-count_M = my_table3_male.aggregate(lambda x: len(x), 'fare')
+count_M = my_table3_male.aggregate(lambda x: len(x), 'fare')  # just float
 survived_M = my_table3_male_s.aggregate(lambda x: len(x), 'fare')
 count_F = my_table3_female.aggregate(lambda x: len(x), 'fare')
 survived_F = my_table3_female_s.aggregate(lambda x: len(x), 'fare')
@@ -162,6 +162,14 @@ rate_F = survived_F/count_F
 print("The survival rate")
 print(f'Of male {rate_M}')
 print(f'Of female {rate_F}')
+print()
+
+my_table3_M_south = (my_table3_male.filter
+                     (lambda x: x['embarked'] == 'Southampton'))
+total_embark = my_table3_M_south.aggregate(lambda x: len(x), 'fare')
+
+print("The total number of male passengers embarked at Southampton:")
+print(total_embark)
 
 
 # print("Test filter: only filtering out cities in Italy")
