@@ -113,8 +113,10 @@ class Table:
     # First create a list of unique values for each key
         unique_values_list = []
         for key in keys_to_pivot_list:
-            key_list = my_table3.aggregate(lambda x: print(x), key)
-            print(key_list)
+            key_list = my_table3.aggregate(lambda x: x, key)
+            unique_values_list.append(find_unique(key_list))
+
+        print(unique_values_list)
 
     # Here is an example of unique_values_list for
     # keys_to_pivot_list = ['embarked', 'gender', 'class']
