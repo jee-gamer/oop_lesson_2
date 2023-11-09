@@ -1,5 +1,6 @@
 import csv, os
 import re
+from combination_gen import gen_comb_list
 
 __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -71,11 +72,24 @@ class Table:
                 filtered_table.table.append(item1)
         return filtered_table
     
+    def __is_float(self, element):
+        if element is None:
+            return False
+        try:
+            float(element)
+            return True
+        except ValueError:
+            return False
+
     def aggregate(self, function, aggregation_key):
         temps = []
         for item1 in self.table:
-            temps.append(float(item1[aggregation_key]))
+            if self.__is_float(item1[aggregation_key]):
+                temps.append(float(item1[aggregation_key]))
+            else:
+                temps.append(item1[aggregation_key])
         return function(temps)
+
     
     def select(self, attributes_list):
         temps = []
@@ -86,6 +100,49 @@ class Table:
                     dict_temp[key] = item1[key]
             temps.append(dict_temp)
         return temps
+
+    def pivot_table(self, keys_to_pivot_list, keys_to_aggreagte_list, aggregate_func_list):
+
+        def find_unique(listt):
+            unique = []
+            for i in listt:
+                if i not in unique:
+                    unique.append(i)
+            return unique
+
+    # First create a list of unique values for each key
+        unique_values_list = []
+        for key in keys_to_pivot_list:
+            key_list = my_table3.aggregate(lambda x: print(x), key)
+            print(key_list)
+
+    # Here is an example of unique_values_list for
+    # keys_to_pivot_list = ['embarked', 'gender', 'class']
+    # unique_values_list =
+    # [['Southampton', 'Cherbourg', 'Queenstown'], ['M', 'F'], ['3', '2',
+    # '1']]
+
+    # Get the combination of unique_values_list
+    # You will make use of the function you implemented in Task 2
+
+    import combination_gen
+
+    # code that makes a call to combination_gen.gen_comb_list
+
+    # Example output:
+    # [['Southampton', 'M', '3'],
+    #  ['Cherbourg', 'M', '3'],
+    #  ...
+    #  ['Queenstown', 'F', '1']]
+
+          # code that filters each combination
+
+        # for each filter table applies the relevant aggregate functions
+        # to keys to aggregate
+        # the aggregate functions is listed in aggregate_func_list
+        # to keys to aggregate is listed in keys_to_aggreagte_list
+
+        # return a pivot table
 
     def __str__(self):
         return self.table_name + ':' + str(self.table)
@@ -162,6 +219,12 @@ rate_F = survived_F/count_F
 print("The survival rate")
 print(f'Of male {rate_M}')
 print(f'Of female {rate_F}')
+print()
+
+table4 = Table('titanic', titanic)
+my_DB.insert(table4)
+my_table4 = my_DB.search('titanic')
+my_pivot = my_table4.pivot_table(['embarked', 'gender', 'class'], ['fare', 'fare', 'fare', 'last'], [lambda x: min(x), lambda x: max(x), lambda x: sum(x)/len(x), lambda x: len(x)])
 
 
 # print("Test filter: only filtering out cities in Italy")
