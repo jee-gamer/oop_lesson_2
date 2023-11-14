@@ -101,22 +101,53 @@ class Table:
             temps.append(dict_temp)
         return temps
 
-    def pivot_table(self, keys_to_pivot_list, keys_to_aggreagte_list, aggregate_func_list):
+    def pivot_table(self, keys_to_pivot_list, keys_to_aggreagte_list,
+                    aggregate_func_list):
 
         def find_unique(listt):
             unique = []
             for i in listt:
+                if isinstance(i, float):  # Check if class is float or not
+                    i = int(i)
+                    i = str(i)
                 if i not in unique:
                     unique.append(i)
             return unique
 
-    # First create a list of unique values for each key
+        def custom_sort(item):  # SPECIFIC SHENANIGANS
+            number_sort = item[2]
+            gender_sort = item[1]
+            name_sort = item[0]
+            return (number_sort, gender_sort, name_sort)
+
+        # First create a list of unique values for each key
         unique_values_list = []
         for key in keys_to_pivot_list:
             key_list = my_table3.aggregate(lambda x: x, key)
             unique_values_list.append(find_unique(key_list))
 
-        print(unique_values_list)
+        # print(unique_values_list)
+        combi = gen_comb_list(unique_values_list)
+        # SORTING SHENANIGANS still fail...
+        combi = sorted(combi, key=custom_sort)
+        combi.reverse()
+        print(combi)
+        head_list = []
+
+        for head_row in combi:
+            table = table5
+            for i in range(len(head_row)):
+                table = table.filter(lambda x: x[keys_to_pivot_list[i]] == head_row[i])
+                # print(f"filtering {keys_to_pivot_list[i]} and {head_row[i]}")
+            """Done filtering table for each combination"""
+            value_list = []
+            for i in range(len(keys_to_aggreagte_list)):
+                agg = table.aggregate(aggregate_func_list[i],
+                                      keys_to_aggreagte_list[i])
+                value_list.append(agg)
+            head_list.append([head_row] + [value_list])
+        print(head_list)
+        return Table(self.table_name, head_list)
 
     # Here is an example of unique_values_list for
     # keys_to_pivot_list = ['embarked', 'gender', 'class']

@@ -1,3 +1,6 @@
+import copy
+
+
 def gen_comb_list(list_set):
     '''
         Parameters:
